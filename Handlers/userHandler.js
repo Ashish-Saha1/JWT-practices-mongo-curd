@@ -26,5 +26,24 @@ route.post("/sign-up", async (req,res)=>{
 })
 
 
+route.post("/sign-in", async (req,res)=>{
+    try {
+        const user = await User.findOne({userName: req.body.userName})
+        if(user){
+
+        }else{
+            
+        }
+
+
+
+        //res.status(200).json({user:user})
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ErrorMess: error})
+    }
+})
+
+
 
 module.exports = route;
