@@ -2,9 +2,10 @@ const express = require("express");
 const route = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt')
+var jwt = require('jsonwebtoken');
 const Todo = require("../Schema/todoSchema")
 const User = require("../Schema/userSchema")
-
+        require('dotenv').config()
 
 
 
@@ -30,9 +31,16 @@ route.post("/sign-in", async (req,res)=>{
     try {
         const user = await User.findOne({userName: req.body.userName})
         if(user){
+        const isInvalidPassword = await bcrypt.compare(req.body.password, user.password)
+           if(isInvalidPassword){
+            const token = await jwt.sign({ userName: user.userName, userId: user._id }, process.env.JWT_KEY, {expiresIn: "2 days"});
 
+            res.status(200).json({Mess: "Token generated", token: token})
+           }else{
+            res.status(401).json({ErrorMess: "Authentication Faliure"})
+           }
         }else{
-            
+            res.status(401).json({ErrorMess: "Authentication Faliure"})
         }
 
 

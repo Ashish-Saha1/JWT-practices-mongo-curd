@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 const Todo = require("../Schema/todoSchema")
 const User = require("../Schema/userSchema")
+const checkLoggedIn = require('../Middleware/checkLoggedIn');
 
 
 //Instanse Method Example
@@ -32,7 +33,7 @@ route.get("/:id", async (req,res)=>{
 })
 
 
-route.get("/", async (req,res)=>{
+route.get("/", checkLoggedIn, async (req,res)=>{
     try {
         const getAllTodo = await Todo.find()
            res.status(200).json({Message: getAllTodo })
