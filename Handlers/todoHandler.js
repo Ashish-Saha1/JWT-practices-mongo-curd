@@ -35,28 +35,29 @@ route.get("/:id", async (req,res)=>{
 
 route.get("/", checkLoggedIn, async (req,res)=>{
     try {
-        const getAllTodo = await Todo.find()
+       const getAllTodo = await Todo.find()
+        .populate("user")
            res.status(200).json({Message: getAllTodo })
        } catch (error) {
+        console.log(error);
+        
            res.status(500).json({ErrorGetAll: error })  
        }
 })
 
 
 route.post("/", checkLoggedIn, async (req,res)=>{
-    
+
     try {
     const todo = new Todo(
-        {...req.body,
-            user: req.userId}
-        );
-    
-    const savedTodo = await todo.save()
-       await User.updateOne(
-        {_id: req.userId}, 
-        {$push:{todo: savedTodo._id}}
+        {
+            ...req.body,
+            user: req.userId
+        }
     )
-        res.status(200).json({Message: "Todo inserted Successfully" })
+    const savedTodo = await todo.save()
+    await User.updateOne({_id: req.userId},{$push:{todo: todo._id}}) //here {todo: todo._id} todo is from userSchema
+    res.status(200).json({Message: "Todo inserted Successfully" })
     } catch (error) {
         res.status(500).json({ErrorIs: error.message })
     }

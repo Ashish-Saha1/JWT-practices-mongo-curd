@@ -20,10 +20,10 @@ const todoSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    user:{
-        type: mongoose.Types.ObjectId,
-        ref: 'User'
-    }
+   user : {
+    type : mongoose.Types.ObjectId,
+    ref : "User"
+   }
 })
 
 

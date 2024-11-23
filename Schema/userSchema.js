@@ -19,13 +19,13 @@ const userSchema = mongoose.Schema({
         type: String,
         enum: ['active','inactive']
     },
-
-    todo:[
+    todo: [
         {
             type: mongoose.Types.ObjectId,
-            ref: "User"
+            ref: "Todo"
         }
     ]
+   
 })
 
 
