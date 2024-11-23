@@ -52,6 +52,18 @@ route.post("/sign-in", async (req,res)=>{
     }
 })
 
+route.get('/', async (req,res)=>{
+    try {
+        const getAllUser = await User.find()
+         .populate("todo")
+            res.status(200).json({Message: getAllUser })
+        } catch (error) {
+         console.log(error);
+         
+            res.status(500).json({ErrorGetAll: error })  
+        }
+})
+
 
 
 module.exports = route;

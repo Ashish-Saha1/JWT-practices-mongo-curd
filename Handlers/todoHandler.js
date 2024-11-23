@@ -57,17 +57,32 @@ route.post("/", checkLoggedIn, async (req,res)=>{
     )
     const savedTodo = await todo.save()
     await User.updateOne({_id: req.userId},{$push:{todo: todo._id}}) //here {todo: todo._id} todo is from userSchema
-    res.status(200).json({Message: "Todo inserted Successfully" })
+    res.status(200).json({Message: "Todo inserted Successfully", Data: savedTodo })
     } catch (error) {
         res.status(500).json({ErrorIs: error.message })
     }
 })
 
-route.post("/all", async (req,res)=>{
+route.post("/all", checkLoggedIn, async (req,res)=>{
     try {
-      await  Todo.insertMany(req.body)
-        res.status(200).json({Message: "Todos were inserted Successfully" })
+        const body = req.body;
+        const todo = function(){
+           return body.map(item=>{
+               return {...item, user: req.userId}
+            })
+        }
+
+      const data = await Todo.insertMany(todo())
+      const dataId = function(){ // 
+        return data.map((item)=>{
+            return item._id
+        })
+      }
+      await User.updateMany({_id: req.userId}, {$push:{todo: dataId()}})
+        res.status(200).json({Message: "Todos were inserted Successfully", data:data})
     } catch (error) {
+        console.log(error);
+        
         res.status(500).json({ErrorIs: error })
     }
     
