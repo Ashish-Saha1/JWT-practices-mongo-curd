@@ -43,10 +43,19 @@ route.get("/", checkLoggedIn, async (req,res)=>{
 })
 
 
-route.post("/", async (req,res)=>{
+route.post("/", checkLoggedIn, async (req,res)=>{
+    
     try {
-        const todo = new Todo(req.body);
-        await todo.save()
+    const todo = new Todo(
+        {...req.body,
+            user: req.userId}
+        );
+    
+    const savedTodo = await todo.save()
+       await User.updateOne(
+        {_id: req.userId}, 
+        {$push:{todo: savedTodo._id}}
+    )
         res.status(200).json({Message: "Todo inserted Successfully" })
     } catch (error) {
         res.status(500).json({ErrorIs: error.message })

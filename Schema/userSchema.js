@@ -20,6 +20,12 @@ const userSchema = mongoose.Schema({
         enum: ['active','inactive']
     },
 
+    todo:[
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "User"
+        }
+    ]
 })
 
 
